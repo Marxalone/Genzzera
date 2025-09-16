@@ -1,0 +1,133 @@
+:root{
+  --mercury: #E6E9EC;
+  --dim-blue: #0F2A47;
+  --glass: rgba(255,255,255,0.06);
+  --accent: #7BE0FF;
+  --glass-border: rgba(255,255,255,0.08);
+  --radius: 14px;
+  --card-w: 420px;
+  --tx: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family: var(--tx);
+  background:
+    radial-gradient(ellipse at top left, rgba(123,224,255,0.06), transparent 20%),
+    linear-gradient(180deg, #071422 0%, #031026 100%);
+  color:var(--mercury);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+}
+
+/* page container */
+.page{width:100%; max-width:1100px;}
+
+/* brand header */
+.brand{
+  display:flex;
+  gap:16px;
+  align-items:center;
+  margin-bottom:22px;
+}
+.logo{width:56px; height:56px; object-fit:contain; border-radius:10px; background:linear-gradient(135deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02)); padding:8px}
+.brand-text h1{margin:0;font-size:20px; color:var(--accent)}
+.brand-text .motto{margin:0;font-size:12px;color:rgba(230,233,236,0.7); text-transform:lowercase}
+
+/* card */
+.card-wrap{display:flex;justify-content:center}
+.card{
+  width:100%;
+  max-width:var(--card-w);
+  border-radius:var(--radius);
+  padding:20px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  box-shadow: 0 10px 30px rgba(2,8,20,0.6);
+  border:1px solid var(--glass-border);
+}
+
+/* glass effect */
+.glass{
+  backdrop-filter: blur(8px) saturate(120%);
+  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.015));
+}
+
+/* tabs */
+.tabs{display:flex; gap:8px; margin-bottom:14px}
+.tab{
+  flex:1;
+  padding:10px;
+  background:transparent;
+  color:var(--mercury);
+  border:1px solid transparent;
+  border-radius:10px;
+  cursor:pointer;
+  font-weight:600;
+}
+.tab.active{
+  background: linear-gradient(90deg, rgba(123,224,255,0.06), rgba(255,255,255,0.02));
+  border:1px solid rgba(123,224,255,0.12);
+  color:var(--accent);
+  box-shadow: 0 6px 18px rgba(15,42,71,0.25);
+}
+
+/* forms */
+.form{display:none; flex-direction:column; gap:12px}
+.form.active{display:flex}
+label{font-size:13px; color:rgba(230,233,236,0.8); display:flex; flex-direction:column; gap:8px}
+input{
+  padding:12px 14px;
+  border-radius:10px;
+  border:1px solid rgba(255,255,255,0.04);
+  background: rgba(255,255,255,0.02);
+  color:var(--mercury);
+  outline:none;
+}
+input::placeholder{color:rgba(230,233,236,0.35)}
+
+.actions{display:flex; gap:12px; align-items:center}
+.btn{
+  display:inline-flex; align-items:center; gap:10px;
+  padding:10px 14px; border-radius:10px; border:none; cursor:pointer; font-weight:600;
+}
+.btn.primary{
+  background: linear-gradient(90deg, #34D1FF 0%, #7BE0FF 100%);
+  color: #031026;
+  box-shadow: 0 10px 24px rgba(11,43,67,0.2);
+}
+.link{background:transparent; color:rgba(123,224,255,0.85); border:none; cursor:pointer}
+
+/* divider */
+.divider{margin:10px 0; text-align:center; font-size:12px; color:rgba(255,255,255,0.25)}
+
+/* social buttons */
+.socials{display:flex; flex-direction:column; gap:8px}
+.btn.social{justify-content:center; padding:10px; border-radius:10px; background:transparent; border:1px solid rgba(255,255,255,0.04)}
+.btn.social img{width:18px; height:18px; filter: none; margin-right:8px}
+.btn.social.google{border-color:rgba(234,67,53,0.12)}
+.btn.social.facebook{border-color:rgba(59,89,152,0.12)}
+
+/* loader */
+.loader{position:fixed; inset:0; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:12px; background: linear-gradient(0deg, rgba(2,6,12,0.6), rgba(2,6,12,0.6)); z-index:2000}
+.loader .spinner{width:56px; height:56px; border-radius:50%; border:6px solid rgba(255,255,255,0.06); border-top-color:var(--accent); animation:spin 1s linear infinite}
+.hidden{display:none}
+
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* toast */
+.toast{
+  position:fixed; right:20px; bottom:20px; background: linear-gradient(90deg, rgba(123,224,255,0.08), rgba(255,255,255,0.02));
+  border-radius:12px; padding:14px 18px; border:1px solid rgba(255,255,255,0.04); box-shadow: 0 12px 30px rgba(0,0,0,0.6);
+  transform: translateY(16px); opacity:0; transition: all 360ms ease;
+}
+.toast.show{transform: translateY(0); opacity:1}
+
+/* responsive */
+@media (max-width:520px){
+  .card{padding:14px}
+  .brand{gap:10px}
+}

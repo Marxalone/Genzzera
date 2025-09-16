@@ -1,0 +1,1007 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>GenZera — Login / Register</title>
+  <style>
+    :root {
+      --mercury: #E6E9EC;
+      --silver: #C0C6CC;
+      --bright-silver: #E8EAED;
+      --dim-blue: #0F2A47;
+      --glass: rgba(255,255,255,0.08);
+      --accent: #A6D9FF;
+      --silver-glow: #FFFFFF;
+      --glass-border: rgba(255,255,255,0.12);
+      --radius: 16px;
+      --card-w: 440px;
+      --tx: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      --transition-slow: 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+      --transition-fast: 0.3s ease;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: var(--tx);
+      background: 
+        radial-gradient(ellipse at 20% 20%, rgba(166,217,255,0.2) 0%, transparent 40%),
+        radial-gradient(ellipse at 80% 80%, rgba(166,217,255,0.15) 0%, transparent 40%),
+        linear-gradient(180deg, #0A1A2F 0%, #051224 100%);
+      color: var(--mercury);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Animated background elements */
+    .bg-animation {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      overflow: hidden;
+    }
+
+    .floating-circle {
+      position: absolute;
+      border-radius: 50%;
+      background: radial-gradient(circle, var(--silver) 0%, transparent 70%);
+      opacity: 0.08;
+      animation: float 20s infinite ease-in-out;
+      filter: blur(1px);
+    }
+
+    .floating-circle:nth-child(1) {
+      width: 300px;
+      height: 300px;
+      top: 10%;
+      left: 10%;
+      animation-delay: 0s;
+    }
+
+    .floating-circle:nth-child(2) {
+      width: 200px;
+      height: 200px;
+      top: 60%;
+      left: 80%;
+      animation-delay: -5s;
+    }
+
+    .floating-circle:nth-child(3) {
+      width: 150px;
+      height: 150px;
+      top: 80%;
+      left: 15%;
+      animation-delay: -10s;
+    }
+
+    .floating-circle:nth-child(4) {
+      width: 250px;
+      height: 250px;
+      top: 30%;
+      left: 70%;
+      animation-delay: -15s;
+    }
+
+    /* Shimmering particles */
+    .particle {
+      position: absolute;
+      background: var(--silver-glow);
+      border-radius: 50%;
+      opacity: 0;
+      animation: shimmer 8s infinite linear;
+      filter: blur(1px);
+    }
+
+    @keyframes shimmer {
+      0% {
+        opacity: 0;
+        transform: translateY(0) rotate(0deg);
+      }
+      10% {
+        opacity: 0.7;
+      }
+      50% {
+        opacity: 0.9;
+      }
+      90% {
+        opacity: 0.3;
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-100px) rotate(360deg);
+      }
+    }
+
+    /* Create multiple particles */
+    .particle:nth-child(1) {
+      width: 3px;
+      height: 3px;
+      top: 20%;
+      left: 20%;
+      animation-delay: 0s;
+    }
+    .particle:nth-child(2) {
+      width: 2px;
+      height: 2px;
+      top: 40%;
+      left: 60%;
+      animation-delay: 1s;
+    }
+    .particle:nth-child(3) {
+      width: 4px;
+      height: 4px;
+      top: 60%;
+      left: 40%;
+      animation-delay: 2s;
+    }
+    .particle:nth-child(4) {
+      width: 3px;
+      height: 3px;
+      top: 30%;
+      left: 80%;
+      animation-delay: 3s;
+    }
+    .particle:nth-child(5) {
+      width: 2px;
+      height: 2px;
+      top: 70%;
+      left: 30%;
+      animation-delay: 4s;
+    }
+    .particle:nth-child(6) {
+      width: 3px;
+      height: 3px;
+      top: 50%;
+      left: 10%;
+      animation-delay: 5s;
+    }
+
+    /* page container */
+    .page {
+      width: 100%;
+      max-width: 1100px;
+      animation: fadeIn 1s ease-out;
+    }
+
+    /* brand header */
+    .brand {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      margin-bottom: 32px;
+      transition: transform 0.3s ease;
+    }
+
+    .brand:hover {
+      transform: translateY(-3px);
+    }
+
+    .logo {
+      width: 60px;
+      height: 60px;
+      object-fit: contain;
+      border-radius: 12px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+      padding: 10px;
+      transition: all 0.3s ease;
+      animation: pulse 3s infinite;
+      box-shadow: 0 0 15px rgba(230, 233, 236, 0.2);
+      border: 1px solid rgba(230, 233, 236, 0.1);
+    }
+
+    .logo:hover {
+      transform: scale(1.05) rotate(5deg);
+      box-shadow: 0 0 25px rgba(230, 233, 236, 0.4);
+    }
+
+    .brand-text h1 {
+      margin: 0;
+      font-size: 24px;
+      color: var(--bright-silver);
+      text-shadow: 0 0 15px rgba(230, 233, 236, 0.5);
+      letter-spacing: 1px;
+      font-weight: 700;
+    }
+
+    .brand-text .motto {
+      margin: 4px 0 0 0;
+      font-size: 13px;
+      color: rgba(230,233,236,0.8);
+      text-transform: lowercase;
+      letter-spacing: 1.5px;
+      font-weight: 300;
+    }
+
+    /* card */
+    .card-wrap {
+      display: flex;
+      justify-content: center;
+      perspective: 1200px;
+    }
+
+    .card {
+      width: 100%;
+      max-width: var(--card-w);
+      border-radius: var(--radius);
+      padding: 28px;
+      background: linear-gradient(145deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+      box-shadow: 
+        0 15px 35px rgba(2,8,20,0.7),
+        inset 0 1px 0 rgba(255,255,255,0.08),
+        0 0 20px rgba(230, 233, 236, 0.1);
+      border: 1px solid var(--glass-border);
+      transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      transform-style: preserve-3d;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(to bottom right, 
+        rgba(255,255,255,0.05), 
+        rgba(255,255,255,0.01), 
+        rgba(255,255,255,0.05));
+      transform: rotate(30deg);
+      z-index: -1;
+    }
+
+    .card:hover {
+      transform: translateY(-8px) rotateX(3deg);
+      box-shadow: 
+        0 20px 40px rgba(2,8,20,0.8),
+        inset 0 1px 0 rgba(255,255,255,0.1),
+        0 0 30px rgba(230, 233, 236, 0.2);
+    }
+
+    /* glass effect */
+    .glass {
+      backdrop-filter: blur(16px) saturate(180%);
+      background: linear-gradient(145deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+    }
+
+    /* tabs */
+    .tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .tabs::after {
+      content: '';
+      position: absolute;
+      bottom: -6px;
+      left: 0;
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(230,233,236,0.4), transparent);
+    }
+
+    .tab {
+      flex: 1;
+      padding: 14px;
+      background: transparent;
+      color: var(--mercury);
+      border: 1px solid transparent;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      letter-spacing: 0.5px;
+    }
+
+    .tab::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(230,233,236,0.15), transparent);
+      transition: left 0.7s ease;
+    }
+
+    .tab:hover::before {
+      left: 100%;
+    }
+
+    .tab.active {
+      background: linear-gradient(90deg, rgba(230,233,236,0.1), rgba(255,255,255,0.04));
+      border: 1px solid rgba(230,233,236,0.2);
+      color: var(--bright-silver);
+      box-shadow: 0 6px 20px rgba(15,42,71,0.3);
+      text-shadow: 0 0 8px rgba(230, 233, 236, 0.4);
+    }
+
+    /* forms */
+    .form {
+      display: none;
+      flex-direction: column;
+      gap: 20px;
+      animation: fadeIn 0.5s ease-out;
+    }
+
+    .form.active {
+      display: flex;
+    }
+
+    label {
+      font-size: 14px;
+      color: rgba(230,233,236,0.9);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      position: relative;
+    }
+
+    input {
+      padding: 16px 18px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.06);
+      background: rgba(255,255,255,0.03);
+      color: var(--bright-silver);
+      outline: none;
+      transition: all 0.3s ease;
+      font-size: 15px;
+    }
+
+    input::placeholder {
+      color: rgba(230,233,236,0.4);
+      transition: all 0.3s ease;
+    }
+
+    input:focus {
+      border-color: rgba(230,233,236,0.4);
+      box-shadow: 0 0 0 3px rgba(230,233,236,0.15);
+      background: rgba(255,255,255,0.06);
+    }
+
+    input:focus::placeholder {
+      transform: translateX(5px);
+      opacity: 0.7;
+    }
+
+    .actions {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      margin-top: 15px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 20px;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      font-size: 15px;
+    }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(rgba(255,255,255,0.15), transparent);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .btn:hover::before {
+      opacity: 1;
+    }
+
+    .btn.primary {
+      background: linear-gradient(90deg, #A6D9FF 0%, #D4E9FF 100%);
+      color: #051224;
+      box-shadow: 0 12px 26px rgba(166,217,255,0.25);
+    }
+
+    .btn.primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 30px rgba(166,217,255,0.35);
+    }
+
+    .link {
+      background: transparent;
+      color: rgba(230,233,236,0.9);
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+
+    .link:hover {
+      color: var(--bright-silver);
+      text-shadow: 0 0 10px rgba(230,233,236,0.6);
+    }
+
+    /* divider */
+    .divider {
+      margin: 20px 0;
+      text-align: center;
+      font-size: 13px;
+      color: rgba(255,255,255,0.3);
+      position: relative;
+      letter-spacing: 0.5px;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      width: 42%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(230,233,236,0.2), transparent);
+    }
+
+    .divider::before {
+      left: 0;
+    }
+
+    .divider::after {
+      right: 0;
+    }
+
+    /* social buttons */
+    .socials {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .btn.social {
+      justify-content: center;
+      padding: 14px;
+      border-radius: 12px;
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.06);
+      transition: all 0.3s ease;
+      color: var(--mercury);
+    }
+
+    .btn.social:hover {
+      transform: translateY(-2px);
+      border-color: rgba(255,255,255,0.12);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+      background: rgba(255,255,255,0.03);
+    }
+
+    .btn.social img {
+      width: 20px;
+      height: 20px;
+      filter: none;
+      margin-right: 10px;
+      transition: transform 0.3s ease;
+    }
+
+    .btn.social:hover img {
+      transform: scale(1.15);
+    }
+
+    .btn.social.google {
+      border-color: rgba(234,67,53,0.15);
+    }
+
+    .btn.social.google:hover {
+      border-color: rgba(234,67,53,0.3);
+      background: rgba(234,67,53,0.06);
+    }
+
+    .btn.social.facebook {
+      border-color: rgba(59,89,152,0.15);
+    }
+
+    .btn.social.facebook:hover {
+      border-color: rgba(59,89,152,0.3);
+      background: rgba(59,89,152,0.06);
+    }
+
+    /* loader */
+    .loader {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 20px;
+      background: linear-gradient(0deg, rgba(5,18,36,0.9), rgba(5,18,36,0.9));
+      z-index: 2000;
+      backdrop-filter: blur(8px);
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+
+    .loader .spinner {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      border: 4px solid rgba(255,255,255,0.08);
+      border-top-color: var(--accent);
+      animation: spin 1.2s linear infinite;
+    }
+
+    .loader p {
+      color: var(--mercury);
+      font-size: 15px;
+      letter-spacing: 2px;
+      animation: pulse 2s infinite;
+    }
+
+    .hidden {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    /* toast */
+    .toast {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      background: linear-gradient(90deg, rgba(230,233,236,0.12), rgba(255,255,255,0.04));
+      border-radius: 14px;
+      padding: 18px 22px;
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.7);
+      transform: translateY(20px);
+      opacity: 0;
+      transition: all 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+      backdrop-filter: blur(12px);
+      z-index: 1000;
+      max-width: 340px;
+      color: var(--bright-silver);
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    /* Shimmering border animation */
+    @keyframes shimmer-border {
+      0% {
+        box-shadow: 0 0 5px rgba(230, 233, 236, 0.3);
+      }
+      50% {
+        box-shadow: 0 0 20px rgba(230, 233, 236, 0.6);
+      }
+      100% {
+        box-shadow: 0 0 5px rgba(230, 233, 236, 0.3);
+      }
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes pulse {
+      0% { opacity: 0.6; }
+      50% { opacity: 1; }
+      100% { opacity: 0.6; }
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0) rotate(0deg) scale(1); }
+      33% { transform: translateY(-20px) rotate(3deg) scale(1.02); }
+      66% { transform: translateY(10px) rotate(-3deg) scale(0.98); }
+      100% { transform: translateY(0) rotate(0deg) scale(1); }
+    }
+
+    /* Lazy load fade-in for elements */
+    .lazy-load {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .lazy-load.loaded {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Grid animation */
+    .grid-animation {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -2;
+      opacity: 0.1;
+      background-image: 
+        linear-gradient(rgba(230, 233, 236, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(230, 233, 236, 0.1) 1px, transparent 1px);
+      background-size: 40px 40px;
+      animation: grid-move 20s infinite linear;
+    }
+
+    @keyframes grid-move {
+      0% {
+        background-position: 0 0;
+      }
+      100% {
+        background-position: 40px 40px;
+      }
+    }
+
+    /* Responsive */
+    @media (max-width: 520px) {
+      .card { padding: 20px; }
+      .brand { gap: 12px; margin-bottom: 24px; }
+      .btn { padding: 12px 16px; }
+      
+      .floating-circle {
+        display: none;
+      }
+    }
+
+    /* Parallax effect container */
+    .parallax-container {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      z-index: -3;
+    }
+
+    .parallax-layer {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+    }
+
+    .parallax-layer-1 {
+      background: 
+        radial-gradient(circle at 20% 30%, rgba(166,217,255,0.05) 0%, transparent 30%),
+        radial-gradient(circle at 80% 70%, rgba(166,217,255,0.03) 0%, transparent 30%);
+      transform: translateZ(-300px) scale(2);
+    }
+
+    .parallax-layer-2 {
+      background: 
+        radial-gradient(circle at 60% 10%, rgba(166,217,255,0.03) 0%, transparent 20%),
+        radial-gradient(circle at 40% 90%, rgba(166,217,255,0.02) 0%, transparent 20%);
+      transform: translateZ(-150px) scale(1.5);
+    }
+  </style>
+</head>
+<body>
+  <!-- Grid animation -->
+  <div class="grid-animation"></div>
+
+  <!-- Parallax Background -->
+  <div class="parallax-container">
+    <div class="parallax-layer parallax-layer-1"></div>
+    <div class="parallax-layer parallax-layer-2"></div>
+  </div>
+
+  <!-- Animated background elements -->
+  <div class="bg-animation">
+    <div class="floating-circle"></div>
+    <div class="floating-circle"></div>
+    <div class="floating-circle"></div>
+    <div class="floating-circle"></div>
+    
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+  </div>
+
+  <div class="page">
+    <header class="brand lazy-load">
+      <img src="/logo.jpg" alt="GenZera logo" class="logo" />
+      <div class="brand-text">
+        <h1>GenZera</h1>
+        <p class="motto">your go to gen z tech hub.</p>
+      </div>
+    </header>
+
+    <main class="card-wrap">
+      <div class="card glass lazy-load">
+        <div class="tabs">
+          <button id="tab-login" class="tab active">Login</button>
+          <button id="tab-register" class="tab">Register</button>
+        </div>
+
+        <div id="form-container">
+          <!-- Login form -->
+          <form id="login-form" class="form active">
+            <label>Email
+              <input type="email" id="login-email" required placeholder="you@domain.com" />
+            </label>
+            <label>Password
+              <input type="password" id="login-password" required placeholder="••••••••" />
+            </label>
+
+            <div class="actions">
+              <button type="submit" class="btn primary">Sign in</button>
+              <button type="button" id="forgot-btn" class="link">Forgot?</button>
+            </div>
+
+            <div class="divider">Or continue with</div>
+
+            <div class="socials">
+              <button id="google-login" class="btn social google">
+                <img src="icons/google.svg" alt="Google" /> Sign in with Google
+              </button>
+              <button id="facebook-login" class="btn social facebook">
+                <img src="icons/facebook.svg" alt="Facebook" /> Facebook
+              </button>
+            </div>
+          </form>
+
+          <!-- Register form -->
+          <form id="register-form" class="form">
+            <label>Full name
+              <input type="text" id="reg-name" required placeholder="Your name" />
+            </label>
+            <label>Email
+              <input type="email" id="reg-email" required placeholder="you@domain.com" />
+            </label>
+            <label>Password
+              <input type="password" id="reg-password" required placeholder="At least 8 characters" />
+            </label>
+
+            <div class="actions">
+              <button type="submit" class="btn primary">Create account</button>
+            </div>
+
+            <div class="divider">Or register with</div>
+
+            <div class="socials">
+              <button id="google-register" class="btn social google">
+                <img src="icons/google.svg" alt="Google" /> Google
+              </button>
+              <button id="facebook-register" class="btn social facebook">
+                <img src="icons/facebook.svg" alt="Facebook" /> Facebook
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </main>
+
+    <div id="loader" class="loader hidden" aria-hidden="true">
+      <div class="spinner"></div>
+      <p>Loading...</p>
+    </div>
+
+    <!-- Animated popup notification -->
+    <div id="toast" class="toast hidden"></div>
+  </div>
+
+  <script>
+    // frontend/app.js
+    const API_BASE = window.location.origin + '/api'; // adjust if backend hosted elsewhere
+
+    // UI elements
+    const tabLogin = document.getElementById('tab-login');
+    const tabRegister = document.getElementById('tab-register');
+    const loginForm = document.getElementById('login-form');
+    const registerForm = document.getElementById('register-form');
+    const loader = document.getElementById('loader');
+    const toastEl = document.getElementById('toast');
+
+    // Lazy load elements
+    document.addEventListener('DOMContentLoaded', function() {
+      const lazyElements = document.querySelectorAll('.lazy-load');
+      
+      const lazyObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('loaded');
+            lazyObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.1 });
+
+      lazyElements.forEach(element => {
+        lazyObserver.observe(element);
+      });
+
+      // Parallax effect
+      document.addEventListener('mousemove', parallaxEffect);
+      
+      // Create additional particles dynamically
+      createParticles(10);
+    });
+
+    function createParticles(count) {
+      const bgAnimation = document.querySelector('.bg-animation');
+      for (let i = 0; i < count; i++) {
+        const particle = document.createElement('div');
+        particle.classList.add('particle');
+        
+        // Random properties
+        const size = Math.random() * 4 + 1;
+        const posX = Math.random() * 100;
+        const posY = Math.random() * 100;
+        const delay = Math.random() * 8;
+        
+        particle.style.width = `${size}px`;
+        particle.style.height = `${size}px`;
+        particle.style.left = `${posX}%`;
+        particle.style.top = `${posY}%`;
+        particle.style.animationDelay = `${delay}s`;
+        
+        bgAnimation.appendChild(particle);
+      }
+    }
+
+    function parallaxEffect(e) {
+      const x = (window.innerWidth - e.pageX * 2) / 100;
+      const y = (window.innerHeight - e.pageY * 2) / 100;
+      
+      document.querySelector('.parallax-layer-1').style.transform = 
+        `translateX(${x * 0.5}px) translateY(${y * 0.5}px) translateZ(-300px) scale(2)`;
+      
+      document.querySelector('.parallax-layer-2').style.transform = 
+        `translateX(${x}px) translateY(${y}px) translateZ(-150px) scale(1.5)`;
+    }
+
+    function showLoader() {
+      loader.classList.remove('hidden');
+    }
+    
+    function hideLoader() {
+      loader.classList.add('hidden');
+    }
+    
+    function toast(msg, duration = 3000) {
+      toastEl.textContent = msg;
+      toastEl.classList.add('show');
+      toastEl.classList.remove('hidden');
+      setTimeout(() => {
+        toastEl.classList.remove('show');
+        setTimeout(() => toastEl.classList.add('hidden'), 300);
+      }, duration);
+    }
+
+    tabLogin.addEventListener('click', () => {
+      tabLogin.classList.add('active');
+      tabRegister.classList.remove('active');
+      loginForm.classList.add('active'); 
+      registerForm.classList.remove('active');
+    });
+    
+    tabRegister.addEventListener('click', () => {
+      tabRegister.classList.add('active');
+      tabLogin.classList.remove('active');
+      registerForm.classList.add('active'); 
+      loginForm.classList.remove('active');
+    });
+
+    // Register handler
+    registerForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = document.getElementById('reg-name').value.trim();
+      const email = document.getElementById('reg-email').value.trim().toLowerCase();
+      const password = document.getElementById('reg-password').value;
+
+      if (password.length < 8) return toast('Password must be at least 8 characters');
+
+      showLoader();
+      try {
+        const res = await fetch(API_BASE + '/auth/register', {
+          method: 'POST',
+          headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({name,email,password})
+        });
+        const data = await res.json();
+        hideLoader();
+        if (!res.ok) return toast(data.message || 'Registration failed');
+        // store token
+        localStorage.setItem('genzera_token', data.token);
+        toast('Account created — logged in');
+        // redirect opening page: example /app
+        setTimeout(() => window.location.href = '/app', 800);
+      } catch(err){
+        hideLoader();
+        toast('Network error');
+        console.error(err);
+      }
+    });
+
+    // Login handler
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value.trim().toLowerCase();
+      const password = document.getElementById('login-password').value;
+      showLoader();
+      try {
+        const res = await fetch(API_BASE + '/auth/login', {
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({email,password})
+        });
+        const data = await res.json();
+        hideLoader();
+        if (!res.ok) return toast(data.message || 'Login failed');
+        localStorage.setItem('genzera_token', data.token);
+        toast('Welcome back!');
+        setTimeout(()=> window.location.href = '/app', 700);
+      } catch (err) {
+        hideLoader();
+        toast('Network error');
+        console.error(err);
+      }
+    });
+
+    // Google / Facebook buttons open OAuth endpoints on server
+    document.getElementById('google-login').addEventListener('click', () => {
+      window.location.href = '/auth/google';
+    });
+    
+    document.getElementById('google-register').addEventListener('click', () => {
+      window.location.href = '/auth/google';
+    });
+    
+    document.getElementById('facebook-login').addEventListener('click', () => {
+      // Implement /auth/facebook on backend (Facebook OAuth)
+      window.location.href = '/auth/facebook';
+    });
+    
+    document.getElementById('facebook-register').addEventListener('click', () => {
+      window.location.href = '/auth/facebook';
+    });
+
+    // Example: on page load, check token and validate with backend (re-login check)
+    (async function checkToken(){
+      const token = localStorage.getItem('genzera_token');
+      if (!token) return;
+      try {
+        const res = await fetch(API_BASE + '/auth/me', {
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+        if (res.ok) {
+          // user still valid — optionally redirect to /app
+          // const user = await res.json();
+          // console.log('user', user);
+        } else {
+          localStorage.removeItem('genzera_token');
+        }
+      } catch(e){ console.warn('token check failed', e) }
+    })();
+  </script>
+</body>
+</html>
